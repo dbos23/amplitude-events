@@ -12,11 +12,21 @@ def mkdir_if_not_exists(path):
     else:
         os.mkdir(path)
 
-#create directories for data and logs
+#create directories for data and logs; create timestamp (used for file names)
 data_dir = 'data'
 logs_dir = 'logs'
 mkdir_if_not_exists(data_dir)
 mkdir_if_not_exists(logs_dir)
+timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+
+#set up logging
+logging.basicConfig(
+    level = logging.INFO,
+    format = '%(asctime)s - %(levelname)s - %(message)s',
+    filename = f'{logs_dir}/logs_{timestamp}.py'
+)
+
+logger = logging.getLogger()
 
 #load secrets
 load_dotenv()
@@ -30,17 +40,18 @@ params = {
     'end': '20260107T23'
 }
 
-#define retry logic and timestamp (used for output file names)
+#define retry logic
 max_attempts = 3
 attempts_made = 0
-timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
 while attempts_made < 3:
     response = requests.get(url, params=params, auth=(AMP_API_KEY, AMP_SECRET_KEY))
+    request_number = attempts_made + 1
 
     #check for successful download
     if response.status_code == 200:
-        print('Download successful')
+        print('download successful')
+        logger.info('download successful')
         file_path = f'{data_dir}/amplitude_events_{timestamp}.zip'
         with open(file_path, 'wb') as file:
             file.write(response.content)
@@ -48,14 +59,18 @@ while attempts_made < 3:
 
     #check for server error
     elif response.status_code < 200 or response.status_code >= 500:
-        print('Server error')
+        print(f'server error')
+        logger.warning('server error')
         print(response.reason)
+        logger.warning(response.reason)
         print('Retrying...')
         time.sleep(10)
         attempts_made += 1
 
     #check for non-server error
     else:
-        print('Non-server error')
+        print('non-server error')
+        logger.error('non-server error')
         print(response.reason)
+        logger.error(response.reason)
         break
