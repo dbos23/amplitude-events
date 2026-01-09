@@ -60,17 +60,18 @@ while attempts_made < 3:
 
     #check for successful download
     if response.status_code == 200:
-        print('download successful')
-        logger.info('download successful')
+        print('Download successful')
+        logger.info('Download successful')
         file_path = f'{data_dir}/amplitude_events_{end_timestamp_str}.zip'
         with open(file_path, 'wb') as file:
             file.write(response.content)
+        print(f'File written successfully to {file_path}')
         break
 
     #check for server error
     elif response.status_code < 200 or response.status_code >= 500:
-        print(f'server error')
-        logger.warning('server error')
+        print('Server error')
+        logger.warning('Server error')
         print(response.reason)
         logger.warning(response.reason)
         print('Retrying...')
@@ -79,8 +80,8 @@ while attempts_made < 3:
 
     #check for non-server error
     else:
-        print('non-server error')
-        logger.error('non-server error')
+        print('Non-server error. Terminating script')
+        logger.error('Non-server error.')
         print(response.reason)
         logger.error(response.reason)
         break
