@@ -1,17 +1,11 @@
 import requests
 import os
+from functions import mkdir_if_not_exists
 from dotenv import load_dotenv
 from datetime import datetime
 from datetime import timedelta
 import time
 import logging
-
-#function to check if a directory exists; if not, make it
-def mkdir_if_not_exists(path):
-    if os.path.exists(path):
-        pass
-    else:
-        os.mkdir(path)
 
 #create directories for data and logs
 data_dir = 'data'
@@ -81,7 +75,7 @@ while attempts_made < 3:
     #check for non-server error
     else:
         print('Non-server error. Terminating script')
-        logger.error('Non-server error.')
+        logger.error('Non-server error. Terminating script')
         print(response.reason)
         logger.error(response.reason)
         break
