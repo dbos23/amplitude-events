@@ -2,8 +2,7 @@ import requests
 import os
 from functions import mkdir_if_not_exists
 from dotenv import load_dotenv
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 import time
 import logging
 

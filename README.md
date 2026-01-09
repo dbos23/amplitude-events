@@ -7,9 +7,17 @@ This is a project that downloads web traffic data from [Amplitude’s Export API
 
 `extract_events.py` – The main script in the project. It exports the data and writes it to a file
 
+`unzip_files.py` - Unzips the file output by extract_events.py
+
+`functions.py` - Contains functions referenced in the other Python scripts
+
 `.venv/` – Local virtual environment with all installed Python packages
 
-`data/` – Destination folder where Amplitude .zip exports are stored
+`data/` – Destination folder where Amplitude .zip exports are
+
+`extracted_data/` - The folder where the gzip files are written
+
+`json_data/` - The folder where the final JSON files are written after all the extraction
 
 `logs/` – Folder where timestamped log files are written
 
@@ -41,6 +49,12 @@ This is a project that downloads web traffic data from [Amplitude’s Export API
    python extract_events.py
    ```
 
+5. Run the Python script to extract the data
+
+   ```bash
+   python unzip_files.py
+   ```
+
 ## What it does:
 
 - Ensures data/ and logs/ directories exist
@@ -50,5 +64,7 @@ This is a project that downloads web traffic data from [Amplitude’s Export API
 - Calls the Amplitude Export API with your keys
 
 - Saves a .zip file in data/ and logs status in logs/
+
+- Extracts the zip files and its nested gzip files
 
 - Retries the download up to 3 times in the event of an error with the Amplitude API's server
