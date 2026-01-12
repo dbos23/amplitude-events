@@ -22,7 +22,7 @@ for name in os.listdir(zip_directory):
             zObject.extractall(path=extracted_data)
         print(f'{name} successfully extracted')
 
-print('Zip files extracted')
+print('Zip file(s) extracted')
 print('Starting on gzip files')
 
 #Identify directory containing gzip files

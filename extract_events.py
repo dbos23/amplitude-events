@@ -13,20 +13,20 @@ mkdir_if_not_exists(data_dir)
 mkdir_if_not_exists(logs_dir)
 
 #create timestamps (used for file names and api call)
-end_timestamp = datetime.now()
-start_timestamp = end_timestamp - timedelta(days=7)
+current_timestamp = datetime.now()
+prior_day_timestamp = current_timestamp - timedelta(days=1)
 
-end_timestamp_str = end_timestamp.strftime('%Y-%m-%d_%H-%M-%S')
-start_timestamp_str = start_timestamp.strftime('%Y-%m-%d_%H-%M-%S')
+current_timestamp_str = current_timestamp.strftime('%Y-%m-%d_%H-%M-%S')
+prior_day_timestamp_str = prior_day_timestamp.strftime('%Y-%m-%d_%H-%M-%S')
 
-request_end = f'{end_timestamp_str.replace('-', '')[:8]}T23'
-request_start = f'{start_timestamp_str.replace('-', '')[:8]}T00'
+request_start = f'{prior_day_timestamp_str.replace('-', '')[:8]}T00'
+request_end = f'{prior_day_timestamp_str.replace('-', '')[:8]}T23'
 
 #set up logging
 logging.basicConfig(
     level = logging.INFO,
     format = '%(asctime)s - %(levelname)s - %(message)s',
-    filename = f'{logs_dir}/logs_{end_timestamp_str}.py'
+    filename = f'{logs_dir}/logs_{current_timestamp_str}.log'
 )
 
 logger = logging.getLogger()
@@ -55,7 +55,7 @@ while attempts_made < 3:
     if response.status_code == 200:
         print('Download successful')
         logger.info('Download successful')
-        file_path = f'{data_dir}/amplitude_events_{end_timestamp_str}.zip'
+        file_path = f'{data_dir}/amplitude_events_{current_timestamp_str}.zip'
         with open(file_path, 'wb') as file:
             file.write(response.content)
         print(f'File written successfully to {file_path}')

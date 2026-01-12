@@ -2,6 +2,8 @@ data
 logs
 extracted_data
 json_data
+.env
+.venv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
