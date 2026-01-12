@@ -1,6 +1,6 @@
 # Amplitude API Export
 
-This is a project that downloads web traffic data from [Amplitude’s Export API](https://amplitude.com/docs/apis/analytics/export) and writes it to a file. The project is built around a Python script and uses a local virtual environment.
+This is a project that downloads web traffic data from [Amplitude’s Export API](https://amplitude.com/docs/apis/analytics/export) and writes it to a zip file. It then extracts that file and the contained gzip files and outputs the resulting JSON files to Amazon S3. The project is built in Python and uses a local virtual environment.
 ​
 
 ## Project layout
@@ -9,13 +9,15 @@ This is a project that downloads web traffic data from [Amplitude’s Export API
 
 `unzip_files.py` - Unzips the file output by extract_events.py
 
+`load_data_to_s3.py` - Loads the resulting JSON files output by unzip_files.py to Amazon S3
+
 `functions.py` - Contains functions referenced in the other Python scripts
 
 `.venv/` – Local virtual environment with all installed Python packages
 
-`data/` – Destination folder where Amplitude .zip exports are
+`zip_files/` – The folder where the downloaded zip files are output
 
-`extracted_data/` - The folder where the gzip files are written
+`gzip_files/` - The folder where the gzip files are written after extracting the zip files
 
 `json_data/` - The folder where the final JSON files are written after all the extraction
 
@@ -41,6 +43,9 @@ This is a project that downloads web traffic data from [Amplitude’s Export API
    ```text
    AMP_API_KEY = your_amplitude_api_key
    AMP_SECRET_KEY = your_amplitude_secret_key
+   AWS_ACCESS_KEY = your_aws_access_key
+   AWS_SECRET_KEY = your_aws_secret_key
+   bucket_name = your_aws_bucket_name
    ```
 
 4. Run the Python script to download the data
@@ -55,16 +60,26 @@ This is a project that downloads web traffic data from [Amplitude’s Export API
    python unzip_files.py
    ```
 
+6. Run the Python script to upload the data to S3
+
+   ```bash
+   python load_data_to_s3.py
+   ```
+
 ## What it does:
 
-- Ensures data/ and logs/ directories exist
+- Ensures zip_files, gzip_files, json_data, and logs directories exist
 
-- Downloads web traffic data from a 7 day period of time up to and including the current date
+- Downloads web traffic data from the day before the extract script is run
 
 - Calls the Amplitude Export API with your keys
 
-- Saves a .zip file in data/ and logs status in logs/
+- Saves a zip file of data and logs status
 
-- Extracts the zip files and its nested gzip files
+- Extracts the zip file and its nested gzip files to JSON files stored in json_data
+
+- Loads the JSON files to S3
+
+- Deletes local copies of files once they've successfully been extracted/uploaded
 
 - Retries the download up to 3 times in the event of an error with the Amplitude API's server
