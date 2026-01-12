@@ -23,6 +23,8 @@ AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
 AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 bucket_name = os.getenv('bucket_name')
 
+
+
 #connect to s3
 s3_client = boto3.client(
     's3',
@@ -30,8 +32,11 @@ s3_client = boto3.client(
     aws_secret_access_key=AWS_SECRET_KEY
 )
 
-#loop through and upload all JSON files to s3
-for root, dirs, files in os.walk('json_data'):
+#Identify directory with JSON files
+json_data = 'json_data'
+
+#loop through and upload all JSON files to s3, deleting the local files
+for root, dirs, files in os.walk(json_data):
     files = [file for file in files if file[-5:] == '.json'] #filter list to only JSON files
     if len(files) > 0:
         for file in files:
@@ -42,7 +47,7 @@ for root, dirs, files in os.walk('json_data'):
                 s3_client.upload_file(filepath, bucket_name, file)
                 print('Upload successful')
                 logger.info('Upload successful')
-                #os.remove(filepath)
+                os.remove(filepath)
                 print(f'Local copy of {file} deleted')
                 logger.info(f'Local copy of {file} deleted')
             except Exception as e:

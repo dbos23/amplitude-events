@@ -7,7 +7,7 @@ import time
 import logging
 
 #create directories for data and logs
-data_dir = 'data'
+data_dir = 'zip_files'
 logs_dir = 'logs'
 mkdir_if_not_exists(data_dir)
 mkdir_if_not_exists(logs_dir)

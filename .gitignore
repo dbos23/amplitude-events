@@ -4,6 +4,8 @@ extracted_data
 json_data
 .env
 .venv
+zip_files
+gzip_files
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
