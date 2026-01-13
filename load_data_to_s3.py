@@ -2,7 +2,7 @@ import boto3
 from dotenv import load_dotenv
 import os
 from datetime import datetime
-from modules import make_logger
+from modules import make_logger, load_to_s3
 
 #make timestamp for use in log file name
 timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
@@ -26,24 +26,5 @@ s3_client = boto3.client(
 #Identify directory with JSON files
 json_data = 'json_data'
 
-#loop through and upload all JSON files to s3, deleting the local files
-for root, dirs, files in os.walk(json_data):
-    files = [file for file in files if file[-5:] == '.json'] #filter list to only JSON files
-    if len(files) > 0:
-        for file in files:
-            filepath = os.path.join(root, file)
-            print(f'Uploading {filepath}')
-            logger.info(f'Uploading {filepath}')
-            try:
-                s3_client.upload_file(filepath, bucket_name, file)
-                print('Upload successful')
-                logger.info('Upload successful')
-                os.remove(filepath)
-                print(f'Local copy of {file} deleted')
-                logger.info(f'Local copy of {file} deleted')
-            except Exception as e:
-                print(f'Error: {e}')
-                logger.error(f'Error: {e}')
-    else:
-        print('No JSON files to upload')
-        logger.info('No JSON files to upload')
+#loop through and upload all JSON files to s3, deleting the local copies
+load_to_s3(json_dir=json_data, s3_client=s3_client, bucket_name=bucket_name, logger=logger)
