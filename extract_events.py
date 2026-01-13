@@ -1,16 +1,15 @@
 import requests
 import os
-from functions import mkdir_if_not_exists
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 import time
 import logging
 
-#create directories for data and logs
+#create directories for data and logs if they don't already exist
 data_dir = 'zip_files'
 logs_dir = 'logs'
-mkdir_if_not_exists(data_dir)
-mkdir_if_not_exists(logs_dir)
+os.makedirs(data_dir, exist_ok=True)
+os.makedirs(logs_dir, exist_ok=True)
 
 #create timestamps (used for file names and api call)
 current_timestamp = datetime.now()

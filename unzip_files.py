@@ -1,7 +1,6 @@
 import os
 from zipfile import ZipFile
 import gzip
-from functions import mkdir_if_not_exists
 import shutil
 from datetime import datetime
 import logging
@@ -22,8 +21,8 @@ logger = logging.getLogger()
 #check if extracted_data and json_data directories exist; if not, create them
 gzip_files = 'gzip_files'
 json_data = 'json_data'
-mkdir_if_not_exists(gzip_files)
-mkdir_if_not_exists(json_data)
+os.makedirs(gzip_files, exist_ok=True)
+os.makedirs(json_data, exist_ok=True)
 
 # Identify directory containing zip files
 zip_directory = 'zip_files'
