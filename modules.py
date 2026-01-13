@@ -1,7 +1,12 @@
 import requests
 import time
 import logging
-from datetime import datetime
+from zipfile import ZipFile
+import os
+import gzip
+import shutil
+
+
 
 def make_logger(timestamp):
     '''
@@ -54,3 +59,57 @@ def extract_amplitude_data(max_attempts, url, params, API_KEY, SECRET_KEY, logge
             print(response.reason)
             logger.error(response.reason)
             break
+
+
+
+def unzip(zip_dir, gzip_dir, logger):
+    '''
+    Extracts zip files from a given directory, outputting gzip files and then deleting the zip files
+    '''
+    #Iterate through zip files, extracting one by one
+    for name in os.listdir(zip_dir):
+        file_path = os.path.join(zip_dir, name)
+        if file_path[-4:] == '.zip':
+            print(f'Unzipping {name}:')
+            try:
+                with ZipFile(file_path) as zObject:
+                    zObject.extractall(path=gzip_dir)
+                print(f'{name} successfully extracted')
+                logger.info(f'{name} successfully extracted')
+                os.remove(file_path)
+                print(f'{name} deleted')
+                logger.info(f'{name} deleted')
+            except Exception as e:
+                print(f'Error: {e}')
+                logger.error(f'Error: {e}')
+
+
+
+def decompress_gzips(gzip_dir, output_dir, logger):
+    '''
+    Iterates through the created directories, extracting contained gzip files one by one. They're then deleted once they've been extracted
+    '''
+    for name in os.listdir(gzip_dir):
+        dir_path = os.path.join(gzip_dir, name)
+
+        #If it's a directory, loop through it
+        if os.path.isdir(dir_path):
+            for root, _, files in os.walk(dir_path):
+                
+                #Check if each file is a gzip; if yes, extract it
+                for file in files:
+                    if file.endswith('.gz'):
+                        gz_path = os.path.join(root, file)
+                        json_filename = file[:-3]  # remove .gz extension
+                        output_path = os.path.join(output_dir, json_filename)
+                        try:
+                            with gzip.open(gz_path, 'rb') as gz_file, open(output_path, 'wb') as out_file:
+                                shutil.copyfileobj(gz_file, out_file)
+                            print(f'{file} successfully extracted')
+                            logger.info(f'{file} successfully extracted')
+                            os.remove(gz_path)
+                            print(f'{file} deleted')
+                            logger.info(f'{file} deleted')
+                        except Exception as e:
+                            print(f'Error: {e}')
+                            logger.error(f'Error: {e}')
