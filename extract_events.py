@@ -1,16 +1,13 @@
-import requests
 import os
-from functions import mkdir_if_not_exists
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-import time
-import logging
+from modules import extract_amplitude_data, make_logger
 
-#create directories for data and logs
+#create directories for data and logs if they don't already exist
 data_dir = 'zip_files'
 logs_dir = 'logs'
-mkdir_if_not_exists(data_dir)
-mkdir_if_not_exists(logs_dir)
+os.makedirs(data_dir, exist_ok=True)
+os.makedirs(logs_dir, exist_ok=True)
 
 #create timestamps (used for file names and api call)
 current_timestamp = datetime.now()
@@ -23,13 +20,7 @@ request_start = f'{prior_day_timestamp_str.replace('-', '')[:8]}T00'
 request_end = f'{prior_day_timestamp_str.replace('-', '')[:8]}T23'
 
 #set up logging
-logging.basicConfig(
-    level = logging.INFO,
-    format = '%(asctime)s - %(levelname)s - %(message)s',
-    filename = f'{logs_dir}/logs_{current_timestamp_str}.log'
-)
-
-logger = logging.getLogger()
+logger = make_logger(timestamp=current_timestamp_str)
 
 #load secrets
 load_dotenv()
@@ -45,36 +36,15 @@ params = {
 
 #define retry logic
 max_attempts = 3
-attempts_made = 0
 
-while attempts_made < 3:
-    response = requests.get(url, params=params, auth=(AMP_API_KEY, AMP_SECRET_KEY))
-    request_number = attempts_made + 1
-
-    #check for successful download
-    if response.status_code == 200:
-        print('Download successful')
-        logger.info('Download successful')
-        file_path = f'{data_dir}/amplitude_events_{current_timestamp_str}.zip'
-        with open(file_path, 'wb') as file:
-            file.write(response.content)
-        print(f'File written successfully to {file_path}')
-        break
-
-    #check for server error
-    elif response.status_code < 200 or response.status_code >= 500:
-        print('Server error')
-        logger.warning('Server error')
-        print(response.reason)
-        logger.warning(response.reason)
-        print('Retrying...')
-        time.sleep(10)
-        attempts_made += 1
-
-    #check for non-server error
-    else:
-        print('Non-server error. Terminating script')
-        logger.error('Non-server error. Terminating script')
-        print(response.reason)
-        logger.error(response.reason)
-        break
+#extract data, implementing retry logic and logging the outcome
+extract_amplitude_data(
+    max_attempts=max_attempts,
+    url=url,
+    params=params,
+    API_KEY=AMP_API_KEY,
+    SECRET_KEY=AMP_SECRET_KEY,
+    logger=logger,
+    data_dir=data_dir,
+    current_timestamp_str=current_timestamp_str
+)

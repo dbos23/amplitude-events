@@ -5,13 +5,13 @@ This is a project that downloads web traffic data from [Amplitude’s Export API
 
 ## Project layout
 
-`extract_events.py` – The main script in the project. It exports the data and writes it to a file
+`extract_events.py` – Exports the data from the API and writes it to a zip file
 
-`unzip_files.py` - Unzips the file output by extract_events.py
+`unzip_files.py` - Unzips the zip file output by extract_events.py and the contained gzip files
 
 `load_data_to_s3.py` - Loads the resulting JSON files output by unzip_files.py to Amazon S3
 
-`functions.py` - Contains functions referenced in the other Python scripts
+`modules.py` - Contains functions referenced in the other Python scripts
 
 `.venv/` – Local virtual environment with all installed Python packages
 
@@ -29,7 +29,7 @@ This is a project that downloads web traffic data from [Amplitude’s Export API
 
    ```bash
    python -m venv .venv
-   .venv\Scripts\activate  # Windows
+   .venv\Scripts\activate
    ```
 
 2. Install dependencies:
