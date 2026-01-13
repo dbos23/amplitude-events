@@ -1,8 +1,7 @@
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-import logging
-from modules import extract_amplitude_data
+from modules import extract_amplitude_data, make_logger
 
 #create directories for data and logs if they don't already exist
 data_dir = 'zip_files'
@@ -21,13 +20,7 @@ request_start = f'{prior_day_timestamp_str.replace('-', '')[:8]}T00'
 request_end = f'{prior_day_timestamp_str.replace('-', '')[:8]}T23'
 
 #set up logging
-logging.basicConfig(
-    level = logging.INFO,
-    format = '%(asctime)s - %(levelname)s - %(message)s',
-    filename = f'{logs_dir}/logs_{current_timestamp_str}.log'
-)
-
-logger = logging.getLogger()
+logger = make_logger(timestamp=current_timestamp_str)
 
 #load secrets
 load_dotenv()

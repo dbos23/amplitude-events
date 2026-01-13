@@ -1,29 +1,20 @@
 import boto3
 from dotenv import load_dotenv
 import os
-import logging
 from datetime import datetime
+from modules import make_logger
 
 #make timestamp for use in log file name
 timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-log_filepath = f'logs/logs_{timestamp}.log'
 
 #set up logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    filename=log_filepath
-)
-
-logger = logging.getLogger()
+logger = make_logger(timestamp=timestamp)
 
 #access environment variables for authentication with s3
 load_dotenv()
 AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
 AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 bucket_name = os.getenv('bucket_name')
-
-
 
 #connect to s3
 s3_client = boto3.client(

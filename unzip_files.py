@@ -3,20 +3,13 @@ from zipfile import ZipFile
 import gzip
 import shutil
 from datetime import datetime
-import logging
+from modules import make_logger
 
 #make timestamp for use in log file name
 timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-log_filepath = f'logs/logs_{timestamp}.log'
 
 #set up logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    filename=log_filepath
-)
-
-logger = logging.getLogger()
+logger = make_logger(timestamp=timestamp)
 
 #check if extracted_data and json_data directories exist; if not, create them
 gzip_files = 'gzip_files'
