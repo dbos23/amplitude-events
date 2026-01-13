@@ -40,7 +40,8 @@ max_attempts = 3
 #extract data, implementing retry logic and logging the outcome
 extract_amplitude_data(
     max_attempts=max_attempts,
-    url=url, params=params,
+    url=url,
+    params=params,
     API_KEY=AMP_API_KEY,
     SECRET_KEY=AMP_SECRET_KEY,
     logger=logger,
