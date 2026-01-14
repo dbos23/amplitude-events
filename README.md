@@ -1,19 +1,13 @@
 # Amplitude API Export
 
 This is a project that downloads web traffic data from [Amplitude’s Export API](https://amplitude.com/docs/apis/analytics/export) and writes it to a zip file. It then extracts that file and the contained gzip files and outputs the resulting JSON files to Amazon S3. The project is built in Python and uses a local virtual environment.
-​
+​g
 
 ## Project layout
 
-`extract_events.py` – Exports the data from the API and writes it to a zip file
-
-`unzip_files.py` - Unzips the zip file output by extract_events.py and the contained gzip files
-
-`load_data_to_s3.py` - Loads the resulting JSON files output by unzip_files.py to Amazon S3
+`main.py` - Exports the data from the API and writes it to a zip file. Then it unzips that file and the contained gzip files. Finally, it loads the resulting JSON files to a bucket in Amazon S3
 
 `modules.py` - Contains functions referenced in the other Python scripts
-
-`.venv/` – Local virtual environment with all installed Python packages
 
 `zip_files/` – The folder where the downloaded zip files are output
 
@@ -41,29 +35,17 @@ This is a project that downloads web traffic data from [Amplitude’s Export API
 3. Create a .env file in the project root:
 
    ```text
-   AMP_API_KEY = your_amplitude_api_key
-   AMP_SECRET_KEY = your_amplitude_secret_key
-   AWS_ACCESS_KEY = your_aws_access_key
-   AWS_SECRET_KEY = your_aws_secret_key
-   bucket_name = your_aws_bucket_name
+   AMP_API_KEY = '{{ your_amplitude_api_key }}'
+   AMP_SECRET_KEY = '{{ your_amplitude_secret_key }}'
+   AWS_ACCESS_KEY = '{{ your_aws_access_key }}'
+   AWS_SECRET_KEY = '{{ your_aws_secret_key }}'
+   bucket_name = '{{ your_aws_bucket_name }}'
    ```
 
-4. Run the Python script to download the data
+4. Run the Python script to download, unzip, and load the data
 
    ```bash
-   python extract_events.py
-   ```
-
-5. Run the Python script to extract the data
-
-   ```bash
-   python unzip_files.py
-   ```
-
-6. Run the Python script to upload the data to S3
-
-   ```bash
-   python load_data_to_s3.py
+   python main.py
    ```
 
 ## What it does:
@@ -80,6 +62,6 @@ This is a project that downloads web traffic data from [Amplitude’s Export API
 
 - Loads the JSON files to S3
 
-- Deletes local copies of files once they've successfully been extracted/uploaded
+- Deletes local copies of files once they've successfully been unzipped/uploaded
 
 - Retries the download up to 3 times in the event of an error with the Amplitude API's server
