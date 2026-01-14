@@ -1,7 +1,7 @@
 # Amplitude API Export
 
 This is a project that downloads web traffic data from [Amplitude’s Export API](https://amplitude.com/docs/apis/analytics/export) and writes it to a zip file. It then extracts that file and the contained gzip files and outputs the resulting JSON files to Amazon S3. The project is built in Python and uses a local virtual environment.
-​
+​g
 
 ## Project layout
 
