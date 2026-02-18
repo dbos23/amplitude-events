@@ -57,7 +57,7 @@ extract_amplitude_data(
     current_timestamp_str=current_timestamp_str
 )
 
-#Extract zip files, creating gzip files. Remaining zip files are deleted
+#Unzip zip files, outputting gzip files. Remaining zip files are deleted
 unzip(
     zip_dir=zip_files,
     gzip_dir=gzip_files,
@@ -67,7 +67,7 @@ unzip(
 print('Zip file(s) extracted')
 print('Starting on gzip files')
 
-#Extract gzips, outputting json files. The remaining gzip files are deleted
+#Unzip gzip files, outputting json files. Remaining gzip files are deleted
 decompress_gzips(
     gzip_dir=gzip_files,
     output_dir=json_data,
