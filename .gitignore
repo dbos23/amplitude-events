@@ -6,6 +6,7 @@ json_data
 .venv
 zip_files
 gzip_files
+archive
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
